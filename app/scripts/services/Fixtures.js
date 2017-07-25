@@ -1,9 +1,13 @@
- var albumPicasso = {
+ (function() {
+     function Fixtures() {
+         var Fixtures = {};
+       
+  var albumPicasso = {
      title: 'The Colors',
      artist: 'Pablo Picasso',
      label: 'Cubism',
      year: '1881',
-     albumArtUrl: 'assets/images/album_covers/01.png',
+     albumArtUrl: '/assets/images/album_covers/01.png',
      songs: [
          { title: 'Blue', duration: 161.71, audioUrl: 'assets/music/blue' },
          { title: 'Green', duration: 103.96, audioUrl: 'assets/music/green' },
@@ -19,7 +23,7 @@
      artist: 'Guglielmo Marconi',
      label: 'EM',
      year: '1909',
-     albumArtUrl: 'assets/images/album_covers/20.png',
+     albumArtUrl: '/assets/images/album_covers/20.png',
      songs: [
          { title: 'Hello, Operator?', duration: '1:01' },
          { title: 'Ring, ring, ring', duration: '5:01' },
@@ -34,7 +38,7 @@ var albumExoticBirds = {
   artist: 'Phenix Nature',
   label: 'Feather',
   year: '2018',
-  albumArtUrl: 'assets/images/album_covers/birds.jpg',
+  albumArtUrl: '/assets/images/album_covers/birds.jpg',
   songs: [
          { title: 'Morning welcome', duration: '2:22' },
          { title: 'Tropical paradise', duration: '4:43' },
@@ -43,3 +47,13 @@ var albumExoticBirds = {
          { title: 'Tweet, tweet', duration: '1:24'}
      ]
 };
+         Fixtures.getAlbum = function() {
+         return albumPicasso;
+     };
+         return Fixtures;
+     }
+ 
+     angular
+         .module('blocJams')
+         .factory('Fixtures', Fixtures);
+ })();
