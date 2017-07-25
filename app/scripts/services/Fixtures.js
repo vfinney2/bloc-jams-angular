@@ -50,8 +50,18 @@ var albumExoticBirds = {
          Fixtures.getAlbum = function() {
          return albumPicasso;
      };
-         return Fixtures;
-     }
+   
+        Fixtures.getCollection = function(numberOfAlbums){
+          var albumsArray = [];
+          
+          for(var i=0; i<=numberOfAlbums; i++) {
+            albumsArray.push(this.getAlbum());
+          }
+          return albumsArray;
+        };
+       
+   return Fixtures;
+ }
  
      angular
          .module('blocJams')
