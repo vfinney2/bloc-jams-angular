@@ -5,14 +5,12 @@
  * @desc Is used by the factory service to build a functional play/pause buttons nect to the song titles
  * @returns {Object} SongPlayer
  */
-     function SongPlayer() {
+     function SongPlayer(Fixtures) {
           var SongPlayer = {};
-  
-  /*
- * @desc variable that is set to the song object
- * @type {Object}
- */
-  var currentSong = null;
+  /**
+  * @desc Variable set to a function that obtains information about the album. It is used for the next and previous buttons.
+  */
+          var currentAlbum = Fixtures.getAlbum();
   
  /**
  * @desc Buzz object audio file
@@ -29,7 +27,7 @@
   var setSong = function(song) {
     if (currentBuzzObject) {
         currentBuzzObject.stop();
-        currentSong.playing = null;
+        SongPlayer.currentSong.playing = null;
     }
  
     currentBuzzObject = new buzz.sound(song.audioUrl, {
@@ -37,7 +35,7 @@
         preload: true
     });
  
-    currentSong = song;
+    SongPlayer.currentSong = song;
  };
        
  /**
@@ -50,36 +48,72 @@
         currentBuzzObject.play();
         song.playing = true;
     };
-      
+  
+  /**
+  * @function getSongIndex
+  * @desc Gets the index of a song.
+  * @param {Object} song
+  * @returns {Number} 
+  */
+  var getSongIndex = function(song) {
+     return currentAlbum.songs.indexOf(song);
+ };
+ 
+    /*
+ * @desc variable that is set to the song object
+ * @type {Object}
+ */
+  SongPlayer.currentSong = null;
    /*
  * @function a function in SongPlayer object
  * @desc Identifies which song to play and plays it
  * @param {Object} song
  */     
   SongPlayer.play = function(song) {
-      if (currentSong !== song) {
+      song = song || SongPlayer.currentSong;
+      if (SongPlayer.currentSong !== song) {
         setSong(song);
         playSong(song);  
-             } else if (currentSong === song) {
+             } else if (SongPlayer.currentSong === song) {
          if (currentBuzzObject.isPaused()) {
              playSong(song);
          }
        } 
      };
- 
+
   /*
   * @function a function in SongPlayer object
   * @desc Pauses a song
   * @param {Object} song
   */
  SongPlayer.pause = function(song) {
+     song = song || SongPlayer.currentSong;
      currentBuzzObject.pause();
      song.playing = false;
  };
-          return SongPlayer;
+
+   /*
+  * @function a function in SongPlayer object
+  * @desc Skips to the previous song.
+  */
+ SongPlayer.previous = function() {
+     var currentSongIndex = getSongIndex(SongPlayer.currentSong);
+     currentSongIndex--;
+        
+     if (currentSongIndex < 0) {
+         currentBuzzObject.stop();
+         SongPlayer.currentSong.playing = null;
+     } else {
+         var song = currentAlbum.songs[currentSongIndex];
+         setSong(song);
+         playSong(song);
+     }
+ };
+       
+       return SongPlayer;
      }
  
      angular
          .module('blocJams')
-         .factory('SongPlayer', SongPlayer);
+         .factory('SongPlayer', ['Fixtures' , SongPlayer]);
  })();
