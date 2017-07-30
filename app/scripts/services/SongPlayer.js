@@ -5,7 +5,7 @@
  * @desc Is used by the factory service to build a functional play/pause buttons nect to the song titles
  * @returns {Object} SongPlayer
  */
-     function SongPlayer(Fixtures) {
+     function SongPlayer($rootScope, Fixtures) {
           var SongPlayer = {};
   /**
   * @desc Variable set to a function that obtains information about the album. It is used for the next and previous buttons.
@@ -34,6 +34,12 @@
         formats: ['mp3'],
         preload: true
     });
+    
+    currentBuzzObject.bind('timeupdate', function() {
+      $rootScope.$apply(function() {
+          SongPlayer.currentTime = currentBuzzObject.getTime();
+        });
+     });
  
     SongPlayer.currentSong = song;
  };
@@ -74,6 +80,13 @@
  * @type {Object}
  */
   SongPlayer.currentSong = null;
+  
+   /**
+ * @desc Current playback time (in seconds) of currently playing song
+ * @type {Number}
+ */
+ SongPlayer.currentTime = null;
+       
    /*
  * @function a function in SongPlayer object
  * @desc Identifies which song to play and plays it
@@ -138,10 +151,21 @@
    
     };
        
+   /**
+ * @function setCurrentTime
+ * @desc Set current time (in seconds) of currently playing song
+ * @param {Number} time
+ */
+ SongPlayer.setCurrentTime = function(time) {
+     if (currentBuzzObject) {
+         currentBuzzObject.setTime(time);
+     }
+ };
+       
        return SongPlayer;
      }
  
      angular
          .module('blocJams')
-         .factory('SongPlayer', ['Fixtures' , SongPlayer]);
+         .factory('SongPlayer', ['$rootScope', 'Fixtures' , SongPlayer]);
  })();
